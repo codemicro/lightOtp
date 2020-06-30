@@ -7,7 +7,6 @@ import (
 	"github.com/atotto/clipboard"
 	"github.com/codemicro/lightOtp/internal/commands"
 	"github.com/codemicro/lightOtp/internal/helpers"
-	"github.com/codemicro/lightOtp/internal/models"
 	"github.com/codemicro/lightOtp/internal/persist"
 	"github.com/fatih/color"
 	"io/ioutil"
@@ -39,7 +38,7 @@ func main() {
 
 		// Create new Settings
 
-		persist.Settings, err = models.NewSettings()
+		persist.Settings, err = helpers.NewSettings()
 		helpers.CheckErr(err)
 
 		fCont, _ := json.Marshal(&persist.Settings)
