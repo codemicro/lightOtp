@@ -2,7 +2,6 @@ package commands
 
 import (
 	"bufio"
-	"encoding/json"
 	"fmt"
 	"github.com/atotto/clipboard"
 	"github.com/codemicro/lightOtp/internal/helpers"
@@ -11,9 +10,9 @@ import (
 	"github.com/fatih/color"
 	"github.com/pquerna/otp"
 	"github.com/pquerna/otp/totp"
-	"io/ioutil"
 	"net/url"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -51,7 +50,7 @@ func GenerateCode(id int32) {
 	})
 
 	if err != nil {
-		helpers.PrintErrLn("Unable to generate code - " + err.Error())
+		helpers.ErrWithMessage(err, "Unable to generate code")
 		return
 	}
 
@@ -83,7 +82,7 @@ func GenerateCode(id int32) {
 	if !clipboard.Unsupported {
 		err = clipboard.WriteAll(code)
 		if err != nil {
-			helpers.PrintErrLn("Unable to copy code to clipboard")
+			helpers.ErrWithMessage(err, "Unable to copy code to clipboard")
 		} else {
 			fmt.Println("Copied code to clipboard")
 		}
@@ -138,14 +137,31 @@ func AddProvider() {
 	}
 
 	persist.Codes = append(persist.Codes, codeInst)
-
-	jsonCodes, _ := json.Marshal(persist.Codes)
-
-	err = ioutil.WriteFile(persist.Settings.CodesLocation, jsonCodes, 0644)
+	err = helpers.UpdateCodes()
 	if err != nil {
-		helpers.PrintErrLn("Unable to save codes to file.")
+		helpers.ErrWithMessage(err, "Unable to save codes to file.")
 	} else {
 		fmt.Printf("Added as ID %d", len(persist.Codes))
+	}
+}
+
+func RemoveProvider(id int32) {
+
+	scanner := bufio.NewScanner(os.Stdin)
+	_, _ = color.New(color.FgRed).Print("Are you sure? (y/N) > ")
+	scanner.Scan()
+
+	if strings.ToLower(scanner.Text()) == "y" {
+		persist.Codes = append(persist.Codes[:id], persist.Codes[id+1:]...)
+
+		err := helpers.UpdateCodes()
+		if err != nil {
+			helpers.ErrWithMessage(err, "Unable to save codes file.")
+		} else {
+			fmt.Println("Deleted.")
+		}
+	} else {
+		fmt.Println("No action taken.")
 	}
 
 }
