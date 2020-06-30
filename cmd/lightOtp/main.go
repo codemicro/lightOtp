@@ -1,45 +1,47 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
+	"github.com/codemicro/lightOtp/internal/commands"
 	"github.com/codemicro/lightOtp/internal/helpers"
 	"github.com/codemicro/lightOtp/internal/models"
+	"github.com/codemicro/lightOtp/internal/persist"
 	"github.com/fatih/color"
 	"io/ioutil"
 	"os"
+	"strconv"
+	"strings"
 )
 
 const (
 	VERSION string = "0.0.0"
 )
 
-var (
-	settings models.Settings
-)
-
 func main() {
-	col := color.New(color.FgBlue, color.Bold)
+	col := color.New(color.FgCyan, color.Bold)
 	_, _ = col.Print(" _ _       _     _     ___ _         \n| (_) __ _| |__ | |_  /___\\ |_ _ __  \n| | |/ _` |" +
 		" '_ \\| __|//  // __| '_ \\ \n| | | (_| | | | | |_/ \\_//| |_| |_) |\n|_|_|\\__, |_| |_|\\__\\___/  \\__| ._" +
 		"_/ \n     |___/                    |_| ")
 	fmt.Println("v" + VERSION)
+	fmt.Println()
 
-	// Load settings (create new with defaults if does not exist)
+	// Load Settings (create new with defaults if does not exist)
 
-	settingsFileContent, settingsFileLocation, err := helpers.OpenConfigFile("settings.json")
+	settingsFileContent, settingsFileLocation, err := helpers.OpenConfigFile("Settings.json")
 	helpers.CheckErr(err)
 
 	if len(settingsFileContent) == 0 {
 		helpers.PrintInfoLn("Settings file is empty or missing - creating new with default values at " +
 			settingsFileLocation)
 
-		// Create new settings
+		// Create new Settings
 
-		settings, err = models.NewSettings()
+		persist.Settings, err = models.NewSettings()
 		helpers.CheckErr(err)
 
-		fCont, _ := json.Marshal(&settings)
+		fCont, _ := json.Marshal(&persist.Settings)
 		err = ioutil.WriteFile(settingsFileLocation, fCont, 0644)
 		helpers.CheckErr(err)
 
@@ -47,17 +49,17 @@ func main() {
 		helpers.CheckErr(err)
 
 	} else {
-		err = json.Unmarshal([]byte(settingsFileContent), &settings)
+		err = json.Unmarshal([]byte(settingsFileContent), &persist.Settings)
 		helpers.QuitWitMessageIfErr(err, "Unable to parse JSON in the settings file. Quitting.")
 	}
 
 	// Load codes
 
-	rawCodesJson, err := ioutil.ReadFile(settings.CodesLocation)
+	rawCodesJson, err := ioutil.ReadFile(persist.Settings.CodesLocation)
 	if err != nil { // Assuming it means CodesLocation does not exist
 		helpers.PrintInfoLn("Cannot find codes file - creating new from scratch")
 
-		file, err := os.OpenFile(settings.CodesLocation, os.O_RDONLY|os.O_CREATE, 0666)
+		file, err := os.OpenFile(persist.Settings.CodesLocation, os.O_RDONLY|os.O_CREATE, 0666)
 		helpers.QuitWitMessageIfErr(err, "Unable to create codes file. Quitting.")
 		defer file.Close()
 
@@ -67,12 +69,46 @@ func main() {
 
 	}
 
-	var codes []models.TOTPCode
-	err = json.Unmarshal(rawCodesJson, &codes)
+	err = json.Unmarshal(rawCodesJson, &persist.Codes)
 	helpers.QuitWitMessageIfErr(err, "Unable to parse JSON in the codes file. Quitting.")
 
-	for _, code := range codes {
-		fmt.Println(code)
+	// Main program loop
+
+	helpers.PrintInfoLn("Avail. commands - list, new, code, help, exit")
+
+	// reader := bufio.NewReader(os.Stdin)
+
+	scanner := bufio.NewScanner(os.Stdin)
+	for {
+		_, _ = color.New(color.FgCyan).Print("> ")
+		scanner.Scan()
+
+		text := scanner.Text()
+		splitText := strings.Split(text, " ")
+
+		switch splitText[0] {
+		case "help":
+			commands.Help()
+		case "list":
+			commands.ListProviders()
+		case "code":
+			if len(splitText) < 2 {
+				helpers.PrintErrLn("Not enough arguments")
+			} else {
+				i, err := strconv.ParseInt(splitText[1], 10, 32)
+				if err != nil {
+					helpers.PrintErrLn(splitText[1] + ": invalid number")
+				} else {
+					commands.GenerateCode(int32(i - 1))
+				}
+			}
+		case "exit":
+			fmt.Println("Bye o/")
+			os.Exit(0)
+		default:
+			helpers.PrintErrLn(text + ": unknown command")
+		}
+
 	}
 
 }
