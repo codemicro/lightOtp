@@ -51,7 +51,7 @@ func main() {
 
 	} else {
 		err = json.Unmarshal([]byte(settingsFileContent), &persist.Settings)
-		helpers.QuitWitMessageIfErr(err, "Unable to parse JSON in the settings file. Quitting.")
+		helpers.QuitWithMessageIfErr(err, "Unable to parse JSON in the settings file. Quitting.")
 	}
 
 	if clipboard.Unsupported {
@@ -65,7 +65,7 @@ func main() {
 		helpers.PrintInfoLn("Cannot find codes file - creating new from scratch")
 
 		file, err := os.OpenFile(persist.Settings.CodesLocation, os.O_RDONLY|os.O_CREATE, 0666)
-		helpers.QuitWitMessageIfErr(err, "Unable to create codes file. Quitting.")
+		helpers.QuitWithMessageIfErr(err, "Unable to create codes file. Quitting.")
 		defer file.Close()
 
 		_, _ = file.Write([]byte("[]"))
@@ -75,7 +75,7 @@ func main() {
 	}
 
 	err = json.Unmarshal(rawCodesJson, &persist.Codes)
-	helpers.QuitWitMessageIfErr(err, "Unable to parse JSON in the codes file. Quitting.")
+	helpers.QuitWithMessageIfErr(err, "Unable to parse JSON in the codes file. Quitting.")
 
 	// Main program loop
 
@@ -103,6 +103,8 @@ func main() {
 					commands.GenerateCode(int32(i - 1))
 				}
 			}
+		case "add":
+			commands.AddProvider()
 		case "exit":
 			fmt.Println("Bye o/")
 			os.Exit(0)
@@ -110,6 +112,7 @@ func main() {
 			helpers.PrintErrLn(text + ": unknown command. Try running 'help'.")
 		}
 
+		fmt.Println()
 	}
 
 }
