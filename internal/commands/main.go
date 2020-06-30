@@ -2,6 +2,7 @@ package commands
 
 import (
 	"fmt"
+	"github.com/atotto/clipboard"
 	"github.com/codemicro/lightOtp/internal/helpers"
 	"github.com/codemicro/lightOtp/internal/persist"
 	"github.com/pquerna/otp"
@@ -71,4 +72,14 @@ func GenerateCode(id int32) {
 
 	fmt.Printf("Valid for %d seconds\n", remainingSeconds)
 
+	// Send code to clipboard
+
+	if !clipboard.Unsupported {
+		err = clipboard.WriteAll(code)
+		if err != nil {
+			helpers.PrintErrLn("Unable to copy code to clipboard")
+		} else {
+			fmt.Println("Copied code to clipboard")
+		}
+	}
 }

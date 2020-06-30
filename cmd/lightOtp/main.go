@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
+	"github.com/atotto/clipboard"
 	"github.com/codemicro/lightOtp/internal/commands"
 	"github.com/codemicro/lightOtp/internal/helpers"
 	"github.com/codemicro/lightOtp/internal/models"
@@ -53,6 +54,10 @@ func main() {
 		helpers.QuitWitMessageIfErr(err, "Unable to parse JSON in the settings file. Quitting.")
 	}
 
+	if clipboard.Unsupported {
+		helpers.PrintInfoLn("Writing to the clipboard is unavailable. See [INSERT LINK HERE].")
+	}
+
 	// Load codes
 
 	rawCodesJson, err := ioutil.ReadFile(persist.Settings.CodesLocation)
@@ -73,10 +78,6 @@ func main() {
 	helpers.QuitWitMessageIfErr(err, "Unable to parse JSON in the codes file. Quitting.")
 
 	// Main program loop
-
-	helpers.PrintInfoLn("Avail. commands - list, new, code, help, exit")
-
-	// reader := bufio.NewReader(os.Stdin)
 
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
@@ -106,7 +107,7 @@ func main() {
 			fmt.Println("Bye o/")
 			os.Exit(0)
 		default:
-			helpers.PrintErrLn(text + ": unknown command")
+			helpers.PrintErrLn(text + ": unknown command. Try running 'help'.")
 		}
 
 	}
