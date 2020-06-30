@@ -89,7 +89,7 @@ func main() {
 		switch splitText[0] {
 		case "help":
 			commands.Help()
-		case "list":
+		case "list", "ls":
 			commands.ListProviders()
 		case "code":
 			if len(splitText) < 2 {
