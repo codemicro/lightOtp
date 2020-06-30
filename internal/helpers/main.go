@@ -49,7 +49,16 @@ func CheckErr(err error) {
 	}
 }
 
-func QuitWitMessageIfErr(err error, message string) {
+func ErrWithMessage(err error, message string) {
+	if err != nil {
+		PrintErrLn(message)
+		if os.Getenv("DEBUG") != "" {
+			PrintDebugLn(err.Error())
+		}
+	}
+}
+
+func QuitWithMessageIfErr(err error, message string) {
 	if err != nil {
 		PrintErrLn(message)
 		if os.Getenv("DEBUG") != "" {
