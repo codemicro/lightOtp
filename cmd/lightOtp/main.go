@@ -104,6 +104,17 @@ func main() {
 			}
 		case "add":
 			commands.AddProvider()
+		case "del":
+			if len(splitText) < 2 {
+				helpers.PrintErrLn("Not enough arguments")
+			} else {
+				i, err := strconv.ParseInt(splitText[1], 10, 32)
+				if err != nil {
+					helpers.PrintErrLn(splitText[1] + ": invalid number")
+				} else {
+					commands.RemoveProvider(int32(i - 1))
+				}
+			}
 		case "exit":
 			fmt.Println("Bye o/")
 			os.Exit(0)

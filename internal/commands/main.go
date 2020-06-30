@@ -18,7 +18,8 @@ import (
 
 func Help() {
 	fmt.Println("lightOTP help\n  help: shows this command\n  list: lists all providers added\n  code: gets " +
-		"code for a provider (args: provider id)\n  add : adds a new provider\n  exit: ¯\\_(ツ)_/¯")
+		"code for a provider (args: provider ID)\n  add : adds a new provider\n  del : removes a provider (args: " +
+		"provider ID)\n  exit: ¯\\_(ツ)_/¯")
 }
 
 func ListProviders() {
