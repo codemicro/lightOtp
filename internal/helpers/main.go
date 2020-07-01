@@ -9,17 +9,20 @@ import (
 	"path"
 )
 
+var(
+	ConfigDirectory = func() string {
+		userHomeDir, err := os.UserHomeDir()
+		QuitWithMessageIfErr(err, "Unable to locate user's home directory.")
+		return path.Join(userHomeDir, ".config", "lightOtp")
+	}()
+)
+
 func OpenConfigFile(fname string) (string, string, error) {
 
 	// Returns as "" if empty or missing
 
-	directoryPath, err := SetupConfigDir()
-
-	if err != nil {
-		return "", "", err
-	}
-
-	fLoc := path.Join(directoryPath, fname)
+	SetupConfigDir()
+	fLoc := path.Join(ConfigDirectory, fname)
 
 	fileConts, err := ioutil.ReadFile(fLoc)
 
@@ -33,30 +36,17 @@ func OpenConfigFile(fname string) (string, string, error) {
 
 func NewSettings() (models.Settings, error) {
 
-	configDir, err := SetupConfigDir()
-	if err != nil {
-		return models.Settings{}, err
-	}
+	SetupConfigDir()
 
 	return models.Settings{
-		CodesLocation:     path.Join(configDir, "codes.json"),
+		CodesLocation:     path.Join(ConfigDirectory, "codes.json"),
 		DefaultCodeLength: 6,
 	}, nil
 
 }
 
-func SetupConfigDir() (string, error) {
-	userHomeDir, err := os.UserHomeDir()
-
-	if err != nil {
-		return "", err
-	}
-
-	directoryPath := path.Join(userHomeDir, ".config", "lightOtp")
-
-	_ = os.Mkdir(directoryPath, os.ModeDir) // Ignore error (thrown when dir already exists)
-
-	return directoryPath, nil
+func SetupConfigDir() {
+	_ = os.Mkdir(ConfigDirectory, os.ModeDir) // Ignore error (thrown when dir already exists)
 }
 
 func UpdateCodes() error {
