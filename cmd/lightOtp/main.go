@@ -54,7 +54,7 @@ func main() {
 	}
 
 	if clipboard.Unsupported {
-		helpers.PrintInfoLn("Writing to the clipboard is unavailable. See [INSERT LINK HERE].")
+		helpers.PrintInfoLn("Writing to the clipboard is unavailable. Check the README.")
 	}
 
 	// Load codes
