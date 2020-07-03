@@ -21,7 +21,7 @@ func Decrypt(ciphertext []byte, keyString string) ([]byte, error) {
 	// Create the AES cipher
 	block, err := aes.NewCipher(key)
 	if err != nil {
-		panic(err)
+		return []byte(""), err
 	}
 
 	// Before even testing the decryption,

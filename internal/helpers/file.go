@@ -30,7 +30,7 @@ func LoadCodes() error {
 	checksum := md5.Sum(codesJsonSlice)
 	checksumString := encryption.ConvertBytesToHex(checksum[:])
 	if wrapperJson.Checksum != checksumString {
-		return errors.New("checksum does not match (incorrect password?)")
+		return errors.New("checksum does not match")
 	}
 	// Store codes JSON into variable
 	err = json.Unmarshal(codesJsonSlice, &persist.Codes)
