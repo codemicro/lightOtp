@@ -4,7 +4,7 @@
 lightOtp is a command line TOTP code generation tool built with Go. It's cross platform and lightweight.
 
 ## Supported platforms
-* OSX
+* OSX (untested)
 * Windows
 * Linux and Unix 
   * Optional: `xclip` or `xsel` for clipboard support ([atotto/clipboard](https://github.com/atotto/clipboard))
