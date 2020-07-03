@@ -1,13 +1,11 @@
 package helpers
 
 import (
-	"fmt"
 	"github.com/codemicro/lightOtp/internal/models"
-	"golang.org/x/crypto/ssh/terminal"
+	"github.com/howeyc/gopass"
 	"io/ioutil"
 	"os"
 	"path"
-	"syscall"
 )
 
 var (
@@ -52,8 +50,9 @@ func SetupConfigDir() {
 }
 
 func CollectCensoredInput() string {
-	text, _ := terminal.ReadPassword(int(syscall.Stdin))
-	fmt.Println()
+	//text, _ := terminal.ReadPassword(int(syscall.Stdin))
+	text, _ := gopass.GetPasswdMasked()
+	//fmt.Println()
 	return string(text)
 }
 
