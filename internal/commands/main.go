@@ -91,6 +91,8 @@ func GenerateCode(id int32) {
 }
 
 func AddProvider() {
+	// TODO: Validate secret is valid base32 thing
+
 	scanner := bufio.NewScanner(os.Stdin)
 	_, _ = color.New(color.FgCyan).Print("Secret or URI > ")
 	scanner.Scan()

@@ -1,5 +1,10 @@
 package models
 
+type CodesFile struct {
+	Checksum string `json:"checksum"`
+	Codes    string `json:"codes"`
+}
+
 type TOTPCode struct {
 	Issuer      string `json:"issuer"`
 	AccountName string `json:"accountName"`

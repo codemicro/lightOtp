@@ -19,6 +19,10 @@ const (
 	VERSION string = "0.0.0"
 )
 
+var (
+	scanner = bufio.NewScanner(os.Stdin)
+)
+
 func main() {
 	col := color.New(color.FgCyan, color.Bold)
 	_, _ = col.Print(" _ _       _     _     ___ _         \n| (_) __ _| |__ | |_  /___\\ |_ _ __  \n| | |/ _` |" +
@@ -59,26 +63,45 @@ func main() {
 
 	// Load codes
 
-	rawCodesJson, err := ioutil.ReadFile(persist.Settings.CodesLocation)
-	if err != nil { // Assuming it means CodesLocation does not exist
+	if _, err := os.Stat(persist.Settings.CodesLocation); os.IsNotExist(err) {
 		helpers.PrintInfoLn("Cannot find codes file - creating new from scratch")
 
-		file, err := os.OpenFile(persist.Settings.CodesLocation, os.O_RDONLY|os.O_CREATE, 0666)
+		// TODO: Blank out password as it's entered
+		for {
+			_, _ = color.New(color.FgCyan).Print("Please set a master password > ")
+			scanner.Scan()
+			firstPassword := scanner.Text()
+			_, _ = color.New(color.FgCyan).Print("Repeat > ")
+			scanner.Scan()
+			if firstPassword != scanner.Text() {
+				helpers.PrintErrLn("Passwords do not match. Try again.")
+				fmt.Println()
+			} else {
+				persist.MasterPassword = firstPassword
+				break
+			}
+		}
+
+		err := helpers.UpdateCodes()
 		helpers.QuitWithMessageIfErr(err, "Unable to create codes file. Quitting.")
-		defer file.Close()
 
-		_, _ = file.Write([]byte("[]"))
+		helpers.PrintInfoLn("File creation successful!")
 
-		rawCodesJson = []byte("[]")
+	} else {
+		// Collect master password
 
+		_, _ = color.New(color.FgCyan).Print("Master password > ")
+		scanner.Scan()
+		persist.MasterPassword = scanner.Text()
 	}
 
-	err = json.Unmarshal(rawCodesJson, &persist.Codes)
-	helpers.QuitWithMessageIfErr(err, "Unable to parse JSON in the codes file. Quitting.")
+	err = helpers.LoadCodes()
+	helpers.QuitWithMessageIfErr(err, "Unable to load codes file. Quitting. (Is the password incorrect?)")
+
+	fmt.Println()
 
 	// Main program loop
 
-	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		_, _ = color.New(color.FgCyan).Print("> ")
 		scanner.Scan()

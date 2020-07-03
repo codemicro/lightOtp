@@ -1,9 +1,7 @@
 package helpers
 
 import (
-	"encoding/json"
 	"github.com/codemicro/lightOtp/internal/models"
-	"github.com/codemicro/lightOtp/internal/persist"
 	"io/ioutil"
 	"os"
 	"path"
@@ -20,6 +18,7 @@ var (
 func OpenConfigFile(fname string) (string, string, error) {
 
 	// Returns as "" if empty or missing
+	// Return values - file contents, file name, error
 
 	SetupConfigDir()
 	fLoc := path.Join(ConfigDirectory, fname)
@@ -47,12 +46,6 @@ func NewSettings() (models.Settings, error) {
 
 func SetupConfigDir() {
 	_ = os.Mkdir(ConfigDirectory, os.ModeDir) // Ignore error (thrown when dir already exists)
-}
-
-func UpdateCodes() error {
-	jsonCodes, _ := json.Marshal(persist.Codes)
-	err := ioutil.WriteFile(persist.Settings.CodesLocation, jsonCodes, 0644)
-	return err
 }
 
 func CheckErr(err error) {
