@@ -5,6 +5,7 @@ type TOTPCode struct {
 	AccountName string `json:"accountName"`
 	Digits      int    `json:"digits"`
 	Secret      string `json:"secret"`
+	Period      uint   `json:"period"`
 }
 
 type Settings struct {

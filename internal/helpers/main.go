@@ -9,7 +9,7 @@ import (
 	"path"
 )
 
-var(
+var (
 	ConfigDirectory = func() string {
 		userHomeDir, err := os.UserHomeDir()
 		QuitWithMessageIfErr(err, "Unable to locate user's home directory.")

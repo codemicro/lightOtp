@@ -44,7 +44,7 @@ func ListProviders() {
 
 func GenerateCode(id int32) {
 	code, err := totp.GenerateCodeCustom(persist.Codes[id].Secret, time.Now(), totp.ValidateOpts{
-		Period:    30,
+		Period:    persist.Codes[id].Period,
 		Skew:      1,
 		Digits:    otp.Digits(persist.Codes[id].Digits),
 		Algorithm: otp.AlgorithmSHA1,
@@ -135,6 +135,7 @@ func AddProvider() {
 		AccountName: accountName,
 		Digits:      digits,
 		Secret:      secret,
+		Period:      30,
 	}
 
 	persist.Codes = append(persist.Codes, codeInst)
