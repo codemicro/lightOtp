@@ -6,4 +6,5 @@ require (
 	github.com/atotto/clipboard v0.1.2
 	github.com/fatih/color v1.9.0
 	github.com/pquerna/otp v1.2.0
+	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
 )

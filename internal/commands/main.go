@@ -95,9 +95,8 @@ func AddProvider() {
 
 	scanner := bufio.NewScanner(os.Stdin)
 	_, _ = color.New(color.FgCyan).Print("Secret or URI > ")
-	scanner.Scan()
 
-	text := scanner.Text()
+	text := helpers.CollectCensoredInput()
 
 	var issuer string
 	var accountName string

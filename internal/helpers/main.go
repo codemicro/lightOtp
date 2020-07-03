@@ -1,10 +1,13 @@
 package helpers
 
 import (
+	"fmt"
 	"github.com/codemicro/lightOtp/internal/models"
+	"golang.org/x/crypto/ssh/terminal"
 	"io/ioutil"
 	"os"
 	"path"
+	"syscall"
 )
 
 var (
@@ -46,6 +49,12 @@ func NewSettings() (models.Settings, error) {
 
 func SetupConfigDir() {
 	_ = os.Mkdir(ConfigDirectory, os.ModeDir) // Ignore error (thrown when dir already exists)
+}
+
+func CollectCensoredInput() string {
+	text, _ := terminal.ReadPassword(int(syscall.Stdin))
+	fmt.Println()
+	return string(text)
 }
 
 func CheckErr(err error) {

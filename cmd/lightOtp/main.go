@@ -66,14 +66,11 @@ func main() {
 	if _, err := os.Stat(persist.Settings.CodesLocation); os.IsNotExist(err) {
 		helpers.PrintInfoLn("Cannot find codes file - creating new from scratch")
 
-		// TODO: Blank out password as it's entered
 		for {
 			_, _ = color.New(color.FgCyan).Print("Please set a master password > ")
-			scanner.Scan()
-			firstPassword := scanner.Text()
+			firstPassword := helpers.CollectCensoredInput()
 			_, _ = color.New(color.FgCyan).Print("Repeat > ")
-			scanner.Scan()
-			if firstPassword != scanner.Text() {
+			if firstPassword != helpers.CollectCensoredInput() {
 				helpers.PrintErrLn("Passwords do not match. Try again.")
 				fmt.Println()
 			} else {
@@ -89,14 +86,14 @@ func main() {
 
 	} else {
 		// Collect master password
-
 		_, _ = color.New(color.FgCyan).Print("Master password > ")
-		scanner.Scan()
-		persist.MasterPassword = scanner.Text()
+		persist.MasterPassword = helpers.CollectCensoredInput()
 	}
 
 	err = helpers.LoadCodes()
 	helpers.QuitWithMessageIfErr(err, "Unable to load codes file. Quitting. (Is the password incorrect?)")
+
+	helpers.PrintInfoLn("Password ok")
 
 	fmt.Println()
 
