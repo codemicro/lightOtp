@@ -34,7 +34,7 @@ func main() {
 
 	// Load Settings (create new with defaults if does not exist)
 
-	settingsFileContent, settingsFileLocation, err := helpers.OpenConfigFile("Settings.json")
+	settingsFileContent, settingsFileLocation, err := helpers.OpenConfigFile("settings.json")
 	helpers.CheckErr(err)
 
 	if utf8.RuneCountInString(settingsFileContent) == 0 {
@@ -43,15 +43,11 @@ func main() {
 
 		// Create new Settings
 
-		persist.Settings, err = helpers.NewSettings()
-		helpers.CheckErr(err)
+		persist.Settings = helpers.NewSettings() // Create new object with defaults
 
 		fCont, _ := json.Marshal(&persist.Settings)
 		err = ioutil.WriteFile(settingsFileLocation, fCont, 0644)
-		helpers.CheckErr(err)
-
-		settingsFileContent, _, err = helpers.OpenConfigFile("settings.json")
-		helpers.CheckErr(err)
+		helpers.QuitWithMessageIfErr(err, "Unable to save settings file")
 
 	} else {
 		err = json.Unmarshal([]byte(settingsFileContent), &persist.Settings)

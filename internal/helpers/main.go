@@ -34,14 +34,14 @@ func OpenConfigFile(fname string) (string, string, error) {
 
 }
 
-func NewSettings() (models.Settings, error) {
+func NewSettings() models.Settings {
 
 	SetupConfigDir()
 
 	return models.Settings{
 		CodesLocation:     path.Join(ConfigDirectory, "codes.json"),
 		DefaultCodeLength: 6,
-	}, nil
+	}
 
 }
 
