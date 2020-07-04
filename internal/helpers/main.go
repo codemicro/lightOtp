@@ -27,7 +27,7 @@ func OpenConfigFile(fname string) (string, string, error) {
 	fileConts, err := ioutil.ReadFile(fLoc)
 
 	if err != nil {
-		return "", "", nil
+		return "", fLoc, nil
 	}
 
 	return string(fileConts), fLoc, nil

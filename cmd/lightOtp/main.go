@@ -13,6 +13,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"unicode/utf8"
 )
 
 const (
@@ -36,7 +37,7 @@ func main() {
 	settingsFileContent, settingsFileLocation, err := helpers.OpenConfigFile("Settings.json")
 	helpers.CheckErr(err)
 
-	if len(settingsFileContent) == 0 {
+	if utf8.RuneCountInString(settingsFileContent) == 0 {
 		helpers.PrintInfoLn("Settings file is empty or missing - creating new with default values at " +
 			settingsFileLocation)
 
