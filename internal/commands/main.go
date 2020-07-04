@@ -144,7 +144,7 @@ func AddProvider() {
 	if err != nil {
 		helpers.ErrWithMessage(err, "Unable to save codes to file.")
 	} else {
-		fmt.Printf("Added as ID %d", len(persist.Codes))
+		fmt.Printf("Added as ID %d\n", len(persist.Codes))
 	}
 }
 
