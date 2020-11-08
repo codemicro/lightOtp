@@ -12,5 +12,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Added
 * Command to change master password ([642bcf](https://github.com/codemicro/lightOtp/commit/642bcf004bee0c35d05bf80c04c2fc6a1a52d188))
 
-[Unreleased]: https://github.com/codemicro/fiber-cache/compare/v0.0.1...HEAD
-[0.0.1]: https://github.com/codemicro/fiber-cache/releases/tag/v0.0.1
+[Unreleased]: https://github.com/codemicro/lightOtp/compare/v0.0.1...HEAD
+[0.0.1]: https://github.com/codemicro/lightOtp/releases/tag/v0.0.1
