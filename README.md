@@ -11,8 +11,6 @@ lightOtp is a command line TOTP code generation tool built with Go. It's cross p
   
 ## Building from source
 
-Development occurs on Go v1.14.
-
 ```
 go get github.com/codemicro/lightOtp
 go build github.com/codemicro/lightOtp/cmd/lightOtp
