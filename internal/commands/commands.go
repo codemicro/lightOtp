@@ -172,3 +172,21 @@ func RemoveProvider(id int32) {
 	}
 
 }
+
+func ChangePassword() {
+	_, _ = color.New(color.FgCyan).Print("Please set a new master password > ")
+	firstPassword := helpers.CollectCensoredInput()
+	_, _ = color.New(color.FgCyan).Print("Repeat > ")
+	if secondPassword := helpers.CollectCensoredInput(); firstPassword != secondPassword {
+		helpers.PrintErrLn("Passwords do not match. Try again.")
+	} else {
+		persist.MasterPassword = firstPassword
+		helpers.PrintInfoLn("Password changed")
+		err := helpers.UpdateCodes()
+		if err != nil {
+			helpers.ErrWithMessage(err, "Unable to update codes with new password")
+		} else {
+			helpers.PrintInfoLn("Codes written to disk with new password")
+		}
+	}
+}

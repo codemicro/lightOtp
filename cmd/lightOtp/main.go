@@ -135,6 +135,8 @@ func main() {
 		case "exit":
 			fmt.Println("Bye o/")
 			os.Exit(0)
+		case "change":
+			commands.ChangePassword()
 		default:
 			helpers.PrintErrLn(text + ": unknown command. Try running 'help'.")
 		}

@@ -50,9 +50,7 @@ func SetupConfigDir() {
 }
 
 func CollectCensoredInput() string {
-	//text, _ := terminal.ReadPassword(int(syscall.Stdin))
 	text, _ := gopass.GetPasswdMasked()
-	//fmt.Println()
 	return string(text)
 }
 
